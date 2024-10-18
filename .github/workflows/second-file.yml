@@ -6,6 +6,7 @@ jobs:
     steps:
       - name: Get the file details
         run: |
+          touch first-file
           ls
           pwd
       - name: Print GoodBye
