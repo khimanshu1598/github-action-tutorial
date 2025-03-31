@@ -1,9 +1,6 @@
 name: Setup SQLCMD and ODBC Driver
 
-on:
-  push:
-    branches:
-      - "main"
+on: push
 
 jobs:
   setup-sql-tools:
