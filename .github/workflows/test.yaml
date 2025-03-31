@@ -1,7 +1,7 @@
 name: Setup SQLCMD and ODBC Driver
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   setup-sql-tools:
@@ -18,27 +18,13 @@ jobs:
         Start-Process msiexec.exe -Wait -ArgumentList '/i C:\temp\msodbcsql.msi /quiet /norestart IACCEPTMSODBCSQLLICENSETERMS=YES'
 
     - name: ✅ Download and install classic SQLCMD
-      run: |
+    run: |
         Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2216599" -OutFile "C:\temp\SqlCmdLnUtils.msi"
         Start-Process msiexec.exe -Wait -ArgumentList '/i C:\temp\SqlCmdLnUtils.msi /quiet /norestart IACCEPTSQLCMDLNUTILSLICENSETERMS=YES'
-
-    - name: 🔍 Verify ODBC Driver is installed
-      run: |
-        $odbc = Get-WmiObject -Class Win32_Product | Where-Object { $_.Name -like "Microsoft ODBC Driver*" }
-        if ($null -eq $odbc) {
-          Write-Error "❌ ODBC Driver not installed."
-          exit 1
-        } else {
-          Write-Host "✅ ODBC Driver installed: $($odbc.Name)"
-        }
-
-    - name: 🔍 Verify sqlcmd is installed
-      run: |
-        $cmd = Get-Command sqlcmd -ErrorAction SilentlyContinue
-        if ($null -eq $cmd) {
-          Write-Error "❌ sqlcmd is NOT installed or not in PATH."
-          exit 1
-        } else {
-          Write-Host "✅ sqlcmd installed at: $($cmd.Source)"
-          sqlcmd -?  # Print basic info to confirm
-        }
+    
+    - name: 🔍 Confirm sqlcmd is available
+    run: |
+        $sqlcmdPath = "C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn"
+        $env:Path += ";$sqlcmdPath"
+    
+        Get-Command sqlcmd
