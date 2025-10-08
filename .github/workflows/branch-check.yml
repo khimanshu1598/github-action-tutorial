@@ -1,0 +1,13 @@
+name: Trigger only when a push happens to main or develop
+on:
+    push:
+        branches:
+            - main
+            - dev
+
+jobs:
+    first-job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Running the first job
+              run: echo "Code pushed to branch ${{ github.ref_name }}"

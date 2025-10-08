@@ -1,46 +1,46 @@
-name: Setup SQLCMD and ODBC Driver
+# name: Setup SQLCMD and ODBC Driver
 
-on: push
+# on: push
 
 
-jobs:
-  setup-sql-tools:
-    runs-on: windows-latest # Your Windows self-hosted runner
+# jobs:
+#   setup-sql-tools:
+#     runs-on: windows-latest # Your Windows self-hosted runner
 
-    steps:
-    - name: 🧰 Create temp folder
-      run: |
-        New-Item -Path "C:\temp" -ItemType Directory -Force
+#     steps:
+#     - name: 🧰 Create temp folder
+#       run: |
+#         New-Item -Path "C:\temp" -ItemType Directory -Force
 
-    - name: ✅ Download and install ODBC Driver 17
-      run: |
-        Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2307162" -OutFile "C:\temp\msodbcsql.msi"
-        Start-Process msiexec.exe -Wait -ArgumentList '/i C:\temp\msodbcsql.msi /quiet /norestart IACCEPTMSODBCSQLLICENSETERMS=YES'
+#     - name: ✅ Download and install ODBC Driver 17
+#       run: |
+#         Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2307162" -OutFile "C:\temp\msodbcsql.msi"
+#         Start-Process msiexec.exe -Wait -ArgumentList '/i C:\temp\msodbcsql.msi /quiet /norestart IACCEPTMSODBCSQLLICENSETERMS=YES'
 
-    - name: ✅ Download and install classic SQLCMD
-      run: |
-        Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2216599" -OutFile "C:\temp\SqlCmdLnUtils.msi"
-        Start-Process msiexec.exe -Wait -ArgumentList '/i C:\temp\SqlCmdLnUtils.msi /quiet /norestart IACCEPTSQLCMDLNUTILSLICENSETERMS=YES'
+#     - name: ✅ Download and install classic SQLCMD
+#       run: |
+#         Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2216599" -OutFile "C:\temp\SqlCmdLnUtils.msi"
+#         Start-Process msiexec.exe -Wait -ArgumentList '/i C:\temp\SqlCmdLnUtils.msi /quiet /norestart IACCEPTSQLCMDLNUTILSLICENSETERMS=YES'
     
-    - name: 🔍 Locate sqlcmd.exe
-      run: |
-        $searchPaths = @(
-            "C:\Program Files\Microsoft SQL Server",
-            "C:\Program Files (x86)\Microsoft SQL Server"
-        )
+#     - name: 🔍 Locate sqlcmd.exe
+#       run: |
+#         $searchPaths = @(
+#             "C:\Program Files\Microsoft SQL Server",
+#             "C:\Program Files (x86)\Microsoft SQL Server"
+#         )
 
-        $sqlcmd = $null
-        foreach ($path in $searchPaths) {
-            $found = Get-ChildItem -Path $path -Recurse -Filter "sqlcmd.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($found) {
-            $sqlcmd = $found
-            break
-            }
-        }
+#         $sqlcmd = $null
+#         foreach ($path in $searchPaths) {
+#             $found = Get-ChildItem -Path $path -Recurse -Filter "sqlcmd.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+#             if ($found) {
+#             $sqlcmd = $found
+#             break
+#             }
+#         }
 
-        if ($sqlcmd) {
-            Write-Host "✅ sqlcmd found at: $($sqlcmd.FullName)"
-        } else {
-            Write-Error "❌ sqlcmd.exe not found in expected locations"
-        }
+#         if ($sqlcmd) {
+#             Write-Host "✅ sqlcmd found at: $($sqlcmd.FullName)"
+#         } else {
+#             Write-Error "❌ sqlcmd.exe not found in expected locations"
+#         }
     
