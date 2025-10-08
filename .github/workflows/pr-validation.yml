@@ -1,0 +1,14 @@
+name: Testing the PR Request
+on:
+    pull_request:
+        types:
+            - opened
+            - reopened
+            - synchronize
+
+jobs:
+    pull_request_job:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Pull Request first job
+              run: echo "Pull request #${{ github.event.pull_request.number }} triggered this workflow"
